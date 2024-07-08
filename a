@@ -1,4 +1,4 @@
---b
+--c
 repeat wait() until game:IsLoaded()
 local args = {
     [1] = "Vote",
@@ -27,8 +27,7 @@ local function stvt(s)
     end
 
 local function place(info)
-    
-    if game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) then
+  repeat task.wait(.01) until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq)
     local args = {
         [1] = {
             [1] = info.character,
@@ -37,26 +36,14 @@ local function place(info)
         [2] = stvt(info.positionvector)
     }
     
-    game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
-else 
-   repeat task.wait() until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq)
-   local args = {
-    [1] = {
-        [1] = info.character,
-        [2] = stcf(info.positioncframe)
-    },
-    [2] = stvt(info.positionvector)
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
-end 
+    game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args)) 
 end 
 
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
             local max_upgrade = v.Stats.UpgradeNum.Value
-            repeat task.wait() 
+            repeat task.wait(.01) 
             local args = {
                 [1] = "Upgrade",
                 [2] =  v
@@ -103,6 +90,3 @@ if (currentTask.time <= tick() - startTime) then
         tower = tower + 1 
         end 
  end
-
---loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
---game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
