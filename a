@@ -30,9 +30,9 @@ local function place(info)
     local args = {
         [1] = {
             [1] = info.character,
-            [2] = stcf(info.position)
+            [2] = stcf(info.positioncframe)
         },
-        [2] = stvt(info.position)
+        [2] = stvt(info.positionvector)
     }
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
@@ -40,7 +40,7 @@ end
 
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
-        if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stcf(info.cframe) then 
+        if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame  == stcf(info.cframe) then 
             local max_upgrade = v.Stats.UpgradeNum.Value
             repeat task.wait() 
             local args = {
@@ -56,7 +56,7 @@ end
 
  local function sell(info)
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
-        if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stcf(info.cframe) then 
+        if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame  == stcf(info.cframe) then 
     local args = {
         [1] = "Sell",
         [2] = v
@@ -91,5 +91,5 @@ if (currentTask.time <= tick() - startTime) then
         end 
  end
 end)
-
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
 --game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
