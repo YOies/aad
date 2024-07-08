@@ -87,4 +87,4 @@ if (currentTask.time <= tick() - startTime) then
  end
 end)
 
-game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
+
