@@ -1,3 +1,4 @@
+--b
 repeat wait() until game:IsLoaded()
 local args = {
     [1] = "Vote",
@@ -38,7 +39,16 @@ local function place(info)
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
 else 
-    print(info.moneyreq .. " is needed to place, ur passing time now")
+   repeat task.wait() until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq)
+   local args = {
+    [1] = {
+        [1] = info.character,
+        [2] = stcf(info.positioncframe)
+    },
+    [2] = stvt(info.positionvector)
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
 end 
 end 
 
