@@ -1,0 +1,90 @@
+repeat wait() until game:IsLoaded()
+local args = {
+    [1] = "Vote",
+    [2] = "Button"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remote"):FireServer(unpack(args))
+
+local args = {
+    [1] = "Start",
+    [2] = "Button"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remote"):FireServer(unpack(args))
+local replayName =  "b.txt"
+local startTime = tick()
+local macro = readfile(replayName)
+local httpService = game:GetService("HttpService")
+local recordTowers = httpService:JSONDecode(macro)  
+local function stcf(s)
+return loadstring("return CFrame.new(" .. s .. ");")();
+end
+
+local function stvt(s)
+    return loadstring("return Vector3.new(" .. s .. ");")();
+    end
+
+local function place(info)
+    repeat task.wait() until tonumber(info.moneyreq) <= game.Players.LocalPlayer.GameData.Coins.Value
+    local args = {
+        [1] = {
+            [1] = info.character,
+            [2] = stcf(info.position)
+        },
+        [2] = stvt(info.position)
+    }
+    
+    game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
+end 
+
+local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
+    for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
+        if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame  == stcf(info.cframe) then 
+            local max_upgrade = v.Stats.UpgradeNum.Value
+            repeat task.wait() until tonumber(info.maxupgrades) <= max_upgrade
+            local args = {
+                [1] = "Upgrade",
+                [2] = v
+            }
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
+        end    
+        end
+end 
+
+ local function sell(info)
+    local args = {
+        [1] = "Sell",
+        [2] = info.character
+    }
+    
+    game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
+ end 
+
+local tower = 1
+spawn(function()
+while task.wait() do 
+    if not recordTowers[tower] then 
+        break 
+    end
+
+    local currentTask = recordTowers[tower]         
+if (currentTask.time <= tick() - startTime) then 
+         if currentTask.type == "CreateUnit" then 
+        place(currentTask)
+        print('fired')
+         elseif currentTask.type == "UpgradeUnit" then 
+            upgrade(currentTask)
+            print('fired')
+         elseif currentTask.type == "SellUnit" then 
+            sell(currentTask)
+            print('fired')
+         end
+        recordTowers[tower] = nil
+        tower = tower + 1 
+        end 
+ end
+end)
+
+game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
