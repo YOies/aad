@@ -1,3 +1,4 @@
+--ai
 repeat wait() until game:IsLoaded()
 local args = {
     [1] = "Vote",
@@ -26,11 +27,9 @@ local function stvt(s)
     end
 
 local function place(info)
-    for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
-        if v:IsA("Model") and v:FindFirstChild(info.character) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
-
-        else
-            repeat wait()
+    local startTime = os.time()
+    repeat task.wait()
+    if game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) then
     local args = {
         [1] = {
             [1] = info.character,
@@ -40,12 +39,12 @@ local function place(info)
     }
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
-until v:FindFirstChild(info.character) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe)
 end 
-end 
+until os.time() - startTime >= 3
 end 
 
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
+    
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
             local max_upgrade = v.Stats.UpgradeNum.Value
@@ -96,6 +95,3 @@ if (currentTask.time <= tick() - startTime) then
         tower = tower + 1 
         end 
  end
-
---loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
---game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
