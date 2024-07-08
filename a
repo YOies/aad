@@ -1,4 +1,4 @@
---b
+--C
 repeat wait() until game:IsLoaded()
 local args = {
     [1] = "Vote",
@@ -27,7 +27,7 @@ local function stvt(s)
     end
 
 local function place(info)
-    repeat task.wait() until tonumber(info.moneyreq) <= game.Players.LocalPlayer.GameData.Coins.Value
+    repeat task.wait() 
     local args = {
         [1] = {
             [1] = info.character,
@@ -37,6 +37,7 @@ local function place(info)
     }
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args))
+until tonumber(info.moneyreq) <= game.Players.LocalPlayer.GameData.Coins.Value
 end 
 
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
@@ -69,7 +70,6 @@ end
  end 
 
 local tower = 1
-spawn(function()
 while task.wait() do 
     if not recordTowers[tower] then 
         break 
@@ -91,4 +91,3 @@ if (currentTask.time <= tick() - startTime) then
         tower = tower + 1 
         end 
  end
-end)
