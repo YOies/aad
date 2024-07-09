@@ -81,13 +81,13 @@ while task.wait() do
 if workspace.Maingame.Time.Value >= tonumber(currentTask.OldTime) then 
          if currentTask.type == "CreateUnit" then 
         place(currentTask)
-        print('fired')
+        print('fired place ' .. "current time: " .. currentTask.OldTime)
          elseif currentTask.type == "UpgradeUnit" then 
             upgrade(currentTask)
-            print('fired')
+             print('fired upgrade ' .. "current time: " .. currentTask.OldTime)
          elseif currentTask.type == "SellUnit" then 
             sell(currentTask)
-            print('fired')
+                 print('fired sell ' .. "current time: " .. currentTask.OldTime)
          end
         recordTowers[tower] = nil
         tower = tower + 1 
