@@ -14,7 +14,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Remote"):FireServer(unpack(args))
-local replayName =  "b.txt"
+local replayName =  "c.txt"
 local startTime = tick()
 local macro = readfile(replayName)
 local httpService = game:GetService("HttpService")
@@ -28,7 +28,6 @@ local function stvt(s)
     end
 
 local function place(info)
-  repeat wait(.1) until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) 
     local args = {
         [1] = {
             [1] = info.character,
@@ -45,15 +44,12 @@ end
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
-            local max_upgrade = v.Stats.UpgradeNum.Value
-            repeat wait(.1)
             local args = {
                 [1] = "Upgrade",
                 [2] =  v
             }
             
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
-        until tonumber(info.maxupgrades) <= max_upgrade
         end    
         end
 end 
@@ -96,3 +92,5 @@ if workspace.Maingame.Time.Value >= tonumber(currentTask.OldTime) then
 
 --loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
 --game:GetService("ReplicatedStorage").Teleport:InvokeServer("Retry")
+
+
