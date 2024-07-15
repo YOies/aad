@@ -1,7 +1,6 @@
---s
---b
+
 repeat wait() until game:IsLoaded()
-wait(5)
+wait(8)
 local args = {
     [1] = "Vote",
     [2] = "Button"
@@ -29,7 +28,7 @@ local function stvt(s)
     end
 
 local function place(info)
-    repeat wait()  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) 
+    repeat wait(.1)  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) 
     local args = {
         [1] = {
             [1] = info.character,
@@ -48,7 +47,7 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
             if v:FindFirstChild('Stats') and v.Stats:FindFirstChild("upgradeprice") then 
-                repeat wait()  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.upgradeprices) 
+                repeat wait(.1)  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.upgradeprices) 
             local args = {
                 [1] = "Upgrade",
                 [2] =  v
