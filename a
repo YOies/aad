@@ -1,3 +1,4 @@
+--d
 --b
 repeat wait() until game:IsLoaded()
 wait(5)
@@ -28,6 +29,7 @@ local function stvt(s)
     end
 
 local function place(info)
+    repeat wait()  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.moneyreq) 
     local args = {
         [1] = {
             [1] = info.character,
@@ -45,6 +47,8 @@ end
 local function upgrade(info) -- fixed now its upgrade same unit in macro not random same unit 
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position  == stvt(info.cframe) then 
+            if v:FindFirstChild('Stats') and v.Stats:FindFirstChild("upgradeprice") then 
+                repeat wait()  until game.Players.LocalPlayer.GameData.Coins.Value >= tonumber(info.upgradeprices) 
             local args = {
                 [1] = "Upgrade",
                 [2] =  v
@@ -53,12 +57,14 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
             print("fired upgrade in upgrade remote")
         end    
+    end
         end
 end 
 
  local function sell(info)
     for i,v in pairs(workspace.Maingame.Unit:GetChildren()) do 
         if v:IsA("Model") and v.Name == info.character and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.CFrame.Position == stvt(info.cframe) then 
+        
     local args = {
         [1] = "Sell",
         [2] = v
@@ -76,7 +82,7 @@ while task.wait() do
     end
 
     local currentTask = recordTowers[tower]         
-if workspace.Maingame.Time.Value >= tonumber(currentTask.OldTime) then 
+    if (currentTask.time <= tick() - startTime) then 
          if currentTask.type == "CreateUnit" then 
         place(currentTask)
         print('fired place ' .. "current time: " .. currentTask.OldTime)
@@ -91,3 +97,8 @@ if workspace.Maingame.Time.Value >= tonumber(currentTask.OldTime) then
         tower = tower + 1 
         end 
  end
+
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
+--game:GetService("ReplicatedStorage").Teleport:InvokeServer("Return")
+
+
