@@ -1,7 +1,6 @@
---V
---b
 repeat wait() until game:IsLoaded()
 wait(8)
+ print("start macro! Made by Sukuna a.k.a DatNguyen")
 local args = {
     [1] = "Vote",
     [2] = "Button"
@@ -16,8 +15,8 @@ local args = {
 
 game:GetService("ReplicatedStorage"):WaitForChild("Remote"):FireServer(unpack(args))
 
-local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
+local Notify = AkaliNotif.Notify;
 
 local replayName =  "c.txt"
 local startTime = tick()
@@ -43,11 +42,14 @@ local function place(info)
     }
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args)) 
-    print("fired place in place remote" .. info.moneyreq)
-    Notification:Notify(
-        {Title = "Macro Playback | Place |" .. "Macro Name: " .. replayName, Description = "Unit placed: " .. info.character  .. "\n $ Used: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value},
-        {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
-    )
+    print("fired place in place remote: " .. info.moneyreq)
+    Notify({
+        Description = "Unit Placed: " .. info.character  .. "\n $ Used: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
+        Title = "Macro Playback | Place";
+        Duration = 5;
+        });
+        
+        
 end 
 
 
@@ -63,12 +65,14 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
             }
             
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
-            print("fired upgrade in upgrade remote" .. info.upgradeprices)
-            Notification:Notify(
-    {Title = "Macro Playback | Upgrade |" .. "Macro Name: " .. replayName, Description = "Unit upgraded: " .. info.character ..  "\n $ Used To Upgrade: " .. info.upgradeprices .. "\n $ Player After: " .. game.Players.LocalPlayer.GameData.Coins.Value },
-    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
-)
-
+            print("fired upgrade in upgrade remote: " .. info.upgradeprices)
+Notify({
+    Description = "Unit Upgraded: " .. info.character  .. "\n $ Waiting For Upgrade: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
+    Title = "Macro Playback | Upgrade";
+    Duration = 5;
+    });
+    
+    
         end    
     end
         end
@@ -97,10 +101,13 @@ end
                 sold = isUnitSold(v)
             until sold
             print(v.Name .. " has been sold.")
-            Notification:Notify(
-                {Title = "Macro Playback | Sell |" .. "Macro Name: " .. replayName, Description = "Unit sold: " .. info.character .. "\n $ Player After Sold: " .. game.Players.LocalPlayer.GameData.Coins.Value},
-                {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
-            )
+            Notify({
+                Description = "Unit Sold: " .. info.character  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
+                Title = "Macro Playback | Sell";
+                Duration = 5;
+                });
+                
+                
         end
     end
  end 
@@ -115,14 +122,14 @@ while task.wait() do
     if (currentTask.time <= tick() - startTime) then 
          if currentTask.type == "CreateUnit" then 
         place(currentTask)
-        print('fired place ' .. "current time: " .. currentTask.OldTime)
+        print('fired place | ' .. "current time: " .. currentTask.time)
         
          elseif currentTask.type == "UpgradeUnit" then 
             upgrade(currentTask)
-             print('fired upgrade ' .. "current time: " .. currentTask.OldTime)
+             print('fired upgrade | ' .. "current time: " .. currentTask.time)
          elseif currentTask.type == "SellUnit" then 
             sell(currentTask)
-                 print('fired sell ' .. "current time: " .. currentTask.OldTime)
+                 print('fired sell | ' .. "current time: " .. currentTask.time)
          end
         recordTowers[tower] = nil
         tower = tower + 1 
