@@ -1,5 +1,4 @@
---d
---b
+--real
 repeat wait() until game:IsLoaded()
 wait(8)
 local args = {
@@ -45,7 +44,7 @@ local function place(info)
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args)) 
     print("fired place in place remote" .. info.moneyreq)
     Notification:Notify(
-        {Title = "Macro Playback | Place", Description = "Unit placed: " .. info.character .. "\n $ Player After Place: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\n $ Needed To Place: " .. info.moneyreq},
+        {Title = "Macro Playback | Place", Description = "Unit placed: " .. info.character  .. "\n $ Used: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\n Macro Name: " .. replayName},
         {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
     )
 end 
@@ -65,7 +64,7 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
             print("fired upgrade in upgrade remote" .. info.upgradeprices)
             Notification:Notify(
-    {Title = "Macro Playback | Upgrade", Description = "Unit upgraded: " .. info.character .. "\n $ Player After Upgrade: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\n $ Needed To Upgrade: " .. info.upgradeprices},
+    {Title = "Macro Playback | Upgrade", Description = "Unit upgraded: " .. info.character ..  "\n $ Used To Upgrade: " .. info.upgradeprices .. "\n $ Player After: " .. game.Players.LocalPlayer.GameData.Coins.Value  .. "\n Macro Name: " .. replayName},
     {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
 )
 
@@ -98,7 +97,7 @@ end
             until sold
             print(v.Name .. " has been sold.")
             Notification:Notify(
-                {Title = "Macro Playback | Sell", Description = "Unit sold: " .. info.character .. "\n $ Player After Sold: " .. game.Players.LocalPlayer.GameData.Coins.Value},
+                {Title = "Macro Playback | Sell", Description = "Unit sold: " .. info.character .. "\n $ Player After Sold: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\n Macro Name: " .. replayName},
                 {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
             )
         end
