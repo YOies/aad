@@ -1,6 +1,7 @@
+--no way
 repeat wait() until game:IsLoaded()
 wait(8)
- print("start macro! Made by Sukuna a.k.a DatNguyen")
+print("start macro! Made by Sukuna a.k.a DatNguyen")
 local args = {
     [1] = "Vote",
     [2] = "Button"
@@ -67,7 +68,7 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
             print("fired upgrade in upgrade remote: " .. info.upgradeprices)
 Notify({
-    Description = "Unit Upgraded: " .. info.character  .. "\n $ Waiting For Upgrade: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
+    Description = "Unit Upgraded: " .. info.character  .. "\n $ Waiting For Upgrade: " .. info.upgradeprices  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
     Title = "Macro Playback | Upgrade";
     Duration = 5;
     });
