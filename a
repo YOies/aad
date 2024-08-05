@@ -32,12 +32,13 @@ local Notify = AkaliNotif.Notify;
 
  getgenv().FileName = ""
 
- if workspace.Maingame.Setting.Stages.Value == "Monster City" then 
+--[[ if workspace.Maingame.Setting.Stages.Value == "Monster City" then 
     getgenv().FileName = "c.txt"
     else
         getgenv().FileName = "d.txt"
-    end 
-local replayName =   getgenv().FileName
+    end ]]
+
+local replayName =  "c.txt"
 local startTime = tick()
 local macro = readfile(replayName)
 local httpService = game:GetService("HttpService")
@@ -154,45 +155,3 @@ while task.wait() do
         tower = tower + 1 
         end 
  end
-
---loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/aad/main/a"))()
---game:GetService("ReplicatedStorage").Teleport:InvokeServer("Return")
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/das/main/s"))()
-
-
-local args = {
-    [1] = "normal_1",
-    [2] = 1
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Summon"):InvokeServer(unpack(args))
-
-
-getgenv().a = true 
- while task.wait(.1) do 
-     if a == true then 
- for i,v in pairs(game:GetService("Players").LocalPlayer.UnitsInventory:GetDescendants()) do 
-     if v:IsA("Folder") and v:FindFirstChild("Level") and v:FindFirstChild("Rarity") and v:FindFirstChild("Locked") then 
-         if v.Level.Value == 1 and v.Rarity.Value == "Legendary" and v.Locked.Value == "None" then 
-        local args = {
-            [1] = v
-        }
-        
-        game:GetService("ReplicatedStorage"):WaitForChild("Lab"):InvokeServer(unpack(args))
-    end 
-end 
-end 
-else
-    wait()
-    break
-end 
-end
-
-local args = {
-    [1] = "Start",
-    [2] = "Room100" -- Room50 | Room100
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("InfinityCastle"):InvokeServer(unpack(args))
-
