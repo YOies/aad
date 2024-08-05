@@ -26,8 +26,6 @@ local args = {
 
 game:GetService("ReplicatedStorage"):WaitForChild("Remote"):FireServer(unpack(args))
 
-local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
-local Notify = AkaliNotif.Notify;
 
  getgenv().FileName = ""
 
@@ -62,13 +60,6 @@ local function place(info)
     
     game:GetService("ReplicatedStorage"):WaitForChild("Units"):InvokeServer(unpack(args)) 
     print("fired place in place remote: " .. info.moneyreq)
-    Notify({
-        Description = "Unit Placed: " .. info.character  .. "\n $ Waiting For Place: " .. info.moneyreq  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
-        Title = "Macro Playback | Place";
-        Duration = 5;
-        });
-        
-        
 end 
 
 
@@ -85,13 +76,6 @@ local function upgrade(info) -- fixed now its upgrade same unit in macro not ran
             
             game:GetService("ReplicatedStorage"):WaitForChild("UnitPlacements"):InvokeServer(unpack(args))
             print("fired upgrade in upgrade remote: " .. info.upgradeprices)
-Notify({
-    Description = "Unit Upgraded: " .. info.character  .. "\n $ Waiting For Upgrade: " .. info.upgradeprices  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
-    Title = "Macro Playback | Upgrade";
-    Duration = 5;
-    });
-    
-    
         end    
     end
         end
@@ -119,14 +103,7 @@ end
                 -- Check if the unit is sold
                 sold = isUnitSold(v)
             until sold
-            print(v.Name .. " has been sold.")
-            Notify({
-                Description = "Unit Sold: " .. info.character  .. "\n $ After: " .. game.Players.LocalPlayer.GameData.Coins.Value .. "\nMacro Name: " .. replayName ;
-                Title = "Macro Playback | Sell";
-                Duration = 5;
-                });
-                
-                
+            print(v.Name .. " has been sold.")            
         end
     end
  end 
