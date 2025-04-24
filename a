@@ -1,3 +1,4 @@
+--test
 
 repeat wait() until game:IsLoaded()
 task.wait(1)
@@ -1708,8 +1709,8 @@ end
   if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
   
   -- Disable auto join while running this
-  if Options.DoAction and Options.DoAction.Value == true then 
-    Options.DoAction:SetValue(false)
+  if Options.AutoAction and Options.AutoAction.Value == true then 
+    Options.AutoAction:SetValue(false)
 end
 
   -- Helper function for safe remote calls
@@ -1764,9 +1765,10 @@ end
           click(player.PlayerGui.PlayRoom.Main.Button.Leave)
           task.wait(1)
   
-          ActionWinLose:SetValue(WaitRangers)
-          Options.DoAction:SetValue(true)
-
+          ActionWinLose:SetValue(WaitRangers) -- chall
+          Options.AutoJoinType:SetValue(true) -- join 
+          Options.AutoAction:SetValue(true) -- action after
+         
           break
       end
   
@@ -1870,8 +1872,8 @@ AutoSpecificRangersToggle:OnChanged(function()
 
   if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
   
-  if Options.DoAction and Options.DoAction.Value == true then 
-    Options.DoAction:SetValue(false)
+  if Options.AutoAction and Options.AutoAction.Value == true then 
+    Options.AutoAction:SetValue(false)
 end
   
   -- Helper for firing PlayRoom events
@@ -1924,8 +1926,9 @@ end
           click(player.PlayerGui.PlayRoom.Main.Button.Leave)
           task.wait(1)
   
-          ActionWinLose:SetValue(WaitRangersSpecific)
-          Options.DoAction:SetValue(true)
+          TypeWorld:SetValue(WaitRangersSpecific)
+          Options.AutoJoinType:SetValue(true) 
+          Options.AutoAction:SetValue(true)
           break
       end
   
@@ -2091,7 +2094,7 @@ if getgenv().AutoJoinChallengeSelected == true then
       task.wait(1)
 
       ActionWinLose:SetValue(WaitChallenge)
-      Options.DoAction:SetValue(true)
+      Options.AutoAction:SetValue(true)
   end
 
 else
@@ -2245,9 +2248,9 @@ SendMessageEMBED(getgenv().Url, embed, shouldPing)
 
 DoAction:OnChanged(function()
      print("Toggle changed:", Options.AutoAction.Value)
-  getgenv().AutoDoAction =  Options.AutoAction.Value 
+  getgenv().AutoDoActionInGame =  Options.AutoAction.Value 
     while task.wait(.5) do 
-      if AutoDoAction == true then 
+      if AutoDoActionInGame == true then 
  
         local mode = game:GetService("Players").LocalPlayer.PlayerGui.HUD.InGame.Main.GameInfo.Gamemode.Label.Text
         
