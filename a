@@ -1,4 +1,4 @@
---test
+--again fr
 
 repeat wait() until game:IsLoaded()
 task.wait(1)
@@ -1709,9 +1709,7 @@ end
   if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
   
   -- Disable auto join while running this
-  if Options.AutoAction and Options.AutoAction.Value == true then 
-    Options.AutoAction:SetValue(false)
-end
+
 
   -- Helper function for safe remote calls
   local function firePlayRoomEvent(action, data)
@@ -1872,10 +1870,7 @@ AutoSpecificRangersToggle:OnChanged(function()
 
   if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
   
-  if Options.AutoAction and Options.AutoAction.Value == true then 
-    Options.AutoAction:SetValue(false)
-end
-  
+
   -- Helper for firing PlayRoom events
   local function firePlayRoomEvent(action, data)
       pcall(function()
@@ -2094,6 +2089,7 @@ if getgenv().AutoJoinChallengeSelected == true then
       task.wait(1)
 
       ActionWinLose:SetValue(WaitChallenge)
+      Options.AutoJoinType:SetValue(true) 
       Options.AutoAction:SetValue(true)
   end
 
