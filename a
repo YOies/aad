@@ -1,6 +1,6 @@
--- cooked
+--test optimize
 
-repeat wait() until game:IsLoaded()
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
 task.wait(1)
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
@@ -105,10 +105,6 @@ local Tabs = {
     Main = Window:CreateTab{
         Title = "Main",
         Icon = "phosphor-users-bold"
-    },
-    Info = Window:CreateTab{
-        Title = "Info",
-        Icon = "info"
     },
     Place = Window:CreateTab{
         Title = "Place",
@@ -231,100 +227,6 @@ local DistanceEnemies = Tabs.Main:CreateInput("DistanceEnemies", {
 local Ult = Tabs.Main:CreateToggle("AutoUlt", {Title = "Auto Use Ultimate In X Distance", Default = false })
 
 
--- INFO TAB 
-
-Tabs.Info:AddSection("Basic Info:")
-
-local player = game.Players.LocalPlayer
-local dataFolder = game:GetService("ReplicatedStorage").Player_Data[player.Name].Data
-
-local labels = {"Gem", "Gold","Egg", "Exp", "CurseToken", "MaxCollection", "Title"}
-local paragraphObjects = {}
-local previousValues = {}
-
--- Create paragraphs and connect updates
-for _, valueName in pairs(labels) do
-	local valueObj = dataFolder:FindFirstChild(valueName)
-	if valueObj and valueObj:IsA("ValueBase") then
-		-- Store the initial value
-		previousValues[valueName] = valueObj.Value
-
-		-- Create the paragraph with the initial value
-		local paragraph = Tabs.Info:CreateParagraph(valueName, {
-			Title = valueName,
-			Content = tostring(valueObj.Value)
-		})
-
-		paragraphObjects[valueName] = paragraph
-
-		-- Listen for changes on Value
-		valueObj:GetPropertyChangedSignal("Value"):Connect(function()
-			local newValue = valueObj.Value
-			local previous = previousValues[valueName]
-		
-			local newText =  tostring(newValue)
-		
-			-- Only show difference for number values
-			if typeof(newValue) == "number" and typeof(previous) == "number" then
-				local difference = newValue - previous
-				if difference ~= 0 then
-					newText = newText .. " (+" .. tostring(difference) .. " last match)"
-				end
-			elseif typeof(newValue) == "string" and newValue ~= previous then
-				newText = newText .. " (changed from: " .. tostring(previous) .. ")"
-			end
-		
-			paragraph:SetValue(newText)
-			previousValues[valueName] = newValue
-		end)
-	end
-end
-
-
-Tabs.Info:AddSection("Inventory Info:")
-
-local player = game.Players.LocalPlayer
-local dataFolder = game:GetService("ReplicatedStorage").Player_Data[player.Name].Items
-
-local paragraphs = {}
-local previousAmounts = {}
-
--- Create initial paragraphs for each value in Data
-for _, valueObj in pairs(dataFolder:GetChildren()) do
-    if valueObj:IsA("Folder") and valueObj:FindFirstChild("Amount") then
-        -- Store the initial value
-        previousAmounts[valueObj.Name] = valueObj.Amount.Value
-
-        -- Create the paragraph with the initial value
-        local paragraph = Tabs.Info:CreateParagraph(valueObj.Name, {
-            Title = valueObj.Name,
-            Content =  tostring(valueObj.Amount.Value)
-        })
-
-        -- Store the paragraph to update later
-        paragraphs[valueObj.Name] = paragraph
-
-        -- Listen for changes on Amount.Value
-        valueObj.Amount:GetPropertyChangedSignal("Value"):Connect(function()
-            local newAmount = valueObj.Amount.Value
-            local difference = newAmount - previousAmounts[valueObj.Name]
-
-            -- Update the paragraph content with the difference
-            local newText =  tostring(newAmount)
-            if difference ~= 0 then
-                newText = newText .. " (+ " .. tostring(difference) .. " last match)"
-            end
-
-            -- Update the paragraph text
-            paragraph:SetValue(newText)
-
-            -- Update the previous value for the next comparison
-            previousAmounts[valueObj.Name] = newAmount
-        end)
-    end
-end
-
-
 ------------------------ UPGRADE  
 
 local Players = game:GetService("Players")
@@ -400,20 +302,11 @@ local Place6 = Tabs.Place:CreateDropdown("UnitPlace6", {
     Default = "None",
 })
 
-local TimeDelayForPlace = Tabs.Place:CreateInput("TimeDelayPlace", {
-    Title = "Time Delay:",
-    Default = "",
-    Placeholder = "",
-    Numeric = true, -- Only allows numbers
-    Finished = true, -- Only calls callback when you press enter
-    Callback = function(Value)
-        local cleanInput = Value:gsub("[^%d%.]", "") -- removes all characters except digits and the decimal point
-        getgenv().TimeDelay = tonumber(cleanInput)
-    end
-})
 
 
-local SpecificPlace = Tabs.Place:CreateToggle("AutoSpecificPlace", {Title = "Auto Specific Place", Default = false })
+local SpecificPlace = Tabs.Place:CreateToggle("AutoSpecificPlace", {Title = "Auto Specific Place All Units Every 5s", Default = false })
+
+
 
 ------------- UPGRADE
 
@@ -533,20 +426,8 @@ local numberupgrade6 = Tabs.Upgrade:CreateInput("UnitMaxUpgrade6", {
 
 Tabs.Upgrade:AddSection("Auto Upgrade:")
 
-local TimeDelayForUpgrade = Tabs.Upgrade:CreateInput("TimeDelayMaxUpgrade", {
-    Title = "Time Delay:",
-    Default = "",
-    Placeholder = "",
-    Numeric = true, -- Only allows numbers
-    Finished = true, -- Only calls callback when you press enter
-    Callback = function(Value)
-        local cleanInput = Value:gsub("[^%d%.]", "") -- removes all characters except digits and the decimal point
-		getgenv().TimeDelayUpgrade = tonumber(cleanInput)
-    end
-})
 
-
-local SpecificUpgrade = Tabs.Upgrade:CreateToggle("AutoSpecificUpgrade", {Title = "Auto Specific Upgrade", Default = false })
+local SpecificUpgrade = Tabs.Upgrade:CreateToggle("AutoSpecificUpgrade", {Title = "Auto Specific Upgrade [0.5s]", Default = false })
 local RandomUpgrade = Tabs.Upgrade:CreateToggle("AutoRandomUpgrade", {Title = "Auto Random Upgrade", Default = false })
 
 
@@ -897,7 +778,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("PlayRoom"):WaitForChild("Event"):FireServer(unpack(args))
-task.wait(.5)
+task.wait(1.5)
 local args = {
 [1] = "Change-Difficulty",
 [2] = {
@@ -1006,40 +887,36 @@ end
 end)
 
 VoteStart:OnChanged(function()
-    -- print("Toggle changed:", Options.AutoJoinType.Value)
-  getgenv().AutoVote =  Options.AutoVoteStart.Value 
-    while task.wait(.5) do 
-      if AutoVote == true then 
- 
-        if game:GetService("Players").LocalPlayer.PlayerGui.HUD.InGame.VotePlaying.Visible == true then 
-            game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("OnGame"):WaitForChild("Voting"):WaitForChild("VotePlaying"):FireServer()    
-        end 
+    getgenv().AutoVote = Options.AutoVoteStart.Value
 
-      else
-         wait()
-         break 
-      end 
-     end 
- 
- end)
+    task.spawn(function()
+        local lastVoteTime = 0
+        while getgenv().AutoVote do
+            if game.Players.LocalPlayer.PlayerGui.HUD.InGame.VotePlaying.Visible then
+                if tick() - lastVoteTime > 2 then
+                    game.ReplicatedStorage.Remote.Server.OnGame.Voting.VotePlaying:FireServer()
+                    lastVoteTime = tick()
+                end
+            end
+            task.wait(0.5)
+        end
+    end)
+end)
 
- VotePlay:OnChanged(function()
-    -- print("Toggle changed:", Options.AutoJoinType.Value)
-  getgenv().AutoVotePlay =  Options.AutoPlay.Value 
-    while task.wait(.5) do 
-      if AutoVotePlay == true then 
- 
-        if game:GetService("ReplicatedStorage").Player_Data[game.Players.LocalPlayer.Name].Data.AutoPlay.Value == false then 
-            game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Units"):WaitForChild("AutoPlay"):FireServer()
-        end 
 
-      else
-         wait()
-         break 
-      end 
-     end 
- 
- end)
+VotePlay:OnChanged(function()
+    getgenv().AutoVotePlay = Options.AutoPlay.Value
+    task.spawn(function()
+        while getgenv().AutoVotePlay do
+            local data = game.ReplicatedStorage.Player_Data[game.Players.LocalPlayer.Name].Data
+            if data.AutoPlay.Value == false then
+                game.ReplicatedStorage.Remote.Server.Units.AutoPlay:FireServer()
+            end
+            task.wait(1)
+        end
+    end)
+end)
+
 
  ActionWinLose:OnChanged(function(Value)  -- Auto Do Action Toggle gotta be deep down to make it work.
     getgenv().Method = Value 
@@ -1172,64 +1049,36 @@ Place6:OnChanged(function(Value)
     getgenv().Unit6ForPlace = Value 
 end)
 
+
 SpecificPlace:OnChanged(function()
 	getgenv().AutoPlace = Options.AutoSpecificPlace.Value
-	getgenv().OriginalTimeDelay = getgenv().TimeDelay
+while task.wait(5) do 
+if AutoPlace == true then 
 
-	if getgenv().AutoPlace == true then
-		getgenv().TimeDelay = getgenv().OriginalTimeDelay
-		print("🟢 AutoPlace ON | Delay = " .. getgenv().TimeDelay)
+    local units = {
+        getgenv().Unit1ForPlace or "None",
+        getgenv().Unit2ForPlace or "None",
+        getgenv().Unit3ForPlace or "None",
+        getgenv().Unit4ForPlace or "None",
+        getgenv().Unit5ForPlace or "None",
+        getgenv().Unit6ForPlace or "None"
+    }
 
-		-- Countdown function
-		local function startCountdown()
-			task.spawn(function()
-				for i = 10, 1, -1 do
-					print("⏳ TimeDelay switches to 0.5 in: " .. i .. "s")
-					task.wait(1)
-				end
-				getgenv().TimeDelay = 0.5
-				print("✅ TimeDelay now set to 0.5!")
-			end)
-		end
 
-		-- Start first countdown immediately
-		startCountdown()
+    for _, unitName in ipairs(units) do
+        if unitName ~= "None" then
+            local unit = game.Players.LocalPlayer.UnitsFolder:FindFirstChild(unitName)
+            if unit then
+                game.ReplicatedStorage.Remote.Server.Units.Deployment:FireServer(unit)
+            end
+        end
+    end
 
-		-- Listen for RewardsUI (win/lose)
-		task.spawn(function()
-			local rewardsUI = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("RewardsUI")
-			rewardsUI:GetPropertyChangedSignal("Enabled"):Connect(function()
-				if rewardsUI.Enabled then
-					getgenv().TimeDelay = getgenv().OriginalTimeDelay
-					print("🏁 Win/Lose: Reset TimeDelay to " .. getgenv().TimeDelay)
-					startCountdown()
-				end
-			end)
-		end)
-
-		-- Unit placement loop
-		task.spawn(function()
-			while getgenv().AutoPlace and task.wait(getgenv().TimeDelay) do
-				local units = {
-					getgenv().Unit1ForPlace or "None",
-					getgenv().Unit2ForPlace or "None",
-					getgenv().Unit3ForPlace or "None",
-					getgenv().Unit4ForPlace or "None",
-					getgenv().Unit5ForPlace or "None",
-					getgenv().Unit6ForPlace or "None"
-				}
-
-				for _, unitName in ipairs(units) do
-					if unitName ~= "None" then
-						local unit = game.Players.LocalPlayer.UnitsFolder:FindFirstChild(unitName)
-						if unit then
-							game.ReplicatedStorage.Remote.Server.Units.Deployment:FireServer(unit)
-						end
-					end
-				end
-			end
-		end)
-	end
+    else
+    wait() 
+    break 
+    end 
+    end 
 end)
 
 
@@ -1321,7 +1170,7 @@ SpecificUpgrade:OnChanged(function()
   
                                   -- Wait for the GUI to update and reflect the upgrade
                                   for attempt = 1, 10 do -- 10 attempts = up to 2 seconds
-                                      task.wait(0.2)
+                                      task.wait(0.5)
                                       local updatedGui = unitFrame:FindFirstChild(unitName)
                                       local updatedTextObj = updatedGui and updatedGui:FindFirstChild("UpgradeText")
   
@@ -1344,7 +1193,7 @@ SpecificUpgrade:OnChanged(function()
                   end
               end
   
-              task.wait(getgenv().TimeDelayUpgrade or 1)
+              task.wait(0.5)
           end
   
           runningUpgrade = false
@@ -1355,26 +1204,40 @@ SpecificUpgrade:OnChanged(function()
 
 
  RandomUpgrade:OnChanged(function()
-    -- print("Toggle changed:", Options.AutoJoinType.Value)
-  getgenv().AutoUpgradeForRandom =  Options.AutoRandomUpgrade.Value 
-    while task.wait(.5) do 
-      if AutoUpgradeForRandom == true then 
- 
-        for i,v in pairs(game:GetService("Players").LocalPlayer.UnitsFolder:GetChildren()) do 
-            local args = {
-                [1] = game:GetService("Players").LocalPlayer.UnitsFolder[v.Name]
-            }
-            
-            game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Units"):WaitForChild("Upgrade"):FireServer(unpack(args))
-            
-           end 
-      else
-         wait()
-         break 
-      end 
-     end 
- 
- end)
+    getgenv().AutoUpgradeForRandom = Options.AutoRandomUpgrade.Value
+
+    task.spawn(function()
+        while getgenv().AutoUpgradeForRandom do
+            -- Storing common references to avoid repetitive calls
+            local player = game:GetService("Players").LocalPlayer
+            local unitsFolder = player.UnitsFolder
+            local gui = player.PlayerGui.HUD.InGame.UnitsManager.Main.Main.ScrollingFrame
+
+            for i, v in pairs(unitsFolder:GetChildren()) do
+                -- Ensure the corresponding GUI element exists before accessing it
+                local costTextElement = gui:FindFirstChild(v.Name)
+                if costTextElement and costTextElement:FindFirstChild("CostText") then
+                    local costText = costTextElement.CostText.Text
+                    local cost = tonumber(costText:match("Cost:</font> (%d+)"))
+                    if cost and cost ~= 0 then
+                        -- Use pcall to safely call the upgrade function
+                        local args = { [1] = unitsFolder[v.Name] }
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Units"):WaitForChild("Upgrade"):FireServer(unpack(args))
+                        end)
+                        
+                        if not success then
+                            warn("Error while upgrading " .. v.Name .. ": " .. err)
+                        end
+                    end
+                end
+            end
+            task.wait(1) -- Adjust wait time if necessary
+        end
+    end)
+end)
+
+
 
 ---------------- MISC
 
@@ -1619,52 +1482,34 @@ for i,v in pairs(playerpath2:GetDescendants()) do
  end)
 
  TPIfGlitched:OnChanged(function()
-    -- print("Toggle changed:", Options.AutoJoinType.Value)
-  getgenv().HPCheckToggle =  Options.AutoTPLobbyIfGlitched.Value 
-  coroutine.wrap(function()
-      while task.wait(0.2) do 
-          if not getgenv().HPCheckToggle then break end
-  
-          local hpLabel = workspace.Building.For_Use.Base.Red:WaitForChild("BaseHealthBar").HP.Values
-  
-          local function getCurrentHP()
-              local text = hpLabel.Text
-              return string.match(text, "^(%d+)")
-          end
-  
-          if getCurrentHP() == "0" then
-              print("HP is 0, starting 30s timer...")
-  
-              local startTime = tick()
-              local shouldTP = true
-  
-              while tick() - startTime < 30 do
-                  if not getgenv().HPCheckToggle then
-                      print("Check manually disabled.")
-                      shouldTP = false
-                      break
-                  end
-  
-                  if getCurrentHP() ~= "0" then
-                      print("HP changed, canceling timer.")
-                      shouldTP = false
-                      break
-                  end
-  
-                  task.wait(1)
-              end
-  
-              if shouldTP and getgenv().HPCheckToggle and getCurrentHP() == "0" then
-                  local gameId = "72829404259339"
-                  local TeleportService = game:GetService("TeleportService")
-                  local player = game.Players.LocalPlayer 
-                  TeleportService:Teleport(tonumber(gameId), player)
-              end
-          end
-      end
-  end)()
- 
- end)
+    getgenv().HPCheckToggle = Options.AutoTPLobbyIfGlitched.Value
+
+    task.spawn(function()
+        while getgenv().HPCheckToggle do
+            local hpLabel = workspace.Building.For_Use.Base.Red.BaseHealthBar.HP.Values
+            local hp = string.match(hpLabel.Text, "^(%d+)")
+
+            if hp == "0" then
+                local startTime = tick()
+                while tick() - startTime < 30 do
+                    task.wait(1)
+                    local newHp = string.match(hpLabel.Text, "^(%d+)")
+                    if newHp ~= "0" or not getgenv().HPCheckToggle then
+                        break
+                    end
+                end
+
+                if getgenv().HPCheckToggle and string.match(hpLabel.Text, "^(%d+)") == "0" then
+                    game:GetService("TeleportService"):Teleport(72829404259339, game.Players.LocalPlayer)
+                    break
+                end
+            end
+
+            task.wait(5)
+        end
+    end)
+end)
+
 
 --------- RANGERS   
 
@@ -1749,7 +1594,7 @@ end
       local chapterDescendants = player.PlayerGui.PlayRoom.Main.GameStage.Main.Base.Chapter:GetDescendants()
       for _, v in pairs(chapterDescendants) do
           if v:IsA("Frame") and v.Name == "RangerStageLock" and v.Visible == false then
-              allLocked = false
+              allLocked = false 
               break
           end
       end
@@ -2024,7 +1869,7 @@ else
 end
 
 if mode == "" and not hasDesiredItem then
-    TypeWorld:SetValue(WaitChallenge)
+    TypeWorld:SetValue(WaitChallenge) 
     Options.AutoJoinType:SetValue(true) 
     Options.AutoAction:SetValue(true)
     print("Teleport condition: no in challenge & no desired items left ✅")
