@@ -1,4 +1,4 @@
---bb
+--d
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -2388,7 +2388,7 @@ sections.MainSection13:Toggle({
 sections.MainSection13:Slider({
     Name = "UI Scale",
     Default = 1,
-    Minimum = 0.2,
+    Minimum = 0.3,
     Maximum = 2,
     DisplayMethod = "Tenths",
     Callback = function(Val)
@@ -2429,18 +2429,9 @@ sections.MainSection13:Button({
 MacLib:SetFolder("Maclib")
 tabs.Settings:InsertConfigSection("Left")
 
-spawn(function()
-    while task.wait(1) do 
-        pcall(function()
-            local player = game:GetService("Players").LocalPlayer
-            local bottom = player.PlayerGui.HUD.InGame.Main.BOTTOM
-            if #bottom:GetChildren() > 0 then
-                bottom:ClearAllChildren()
-            end
-        end)
-    end
-end)
 
-
+if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Notification") then 
+    game:GetService("Players").LocalPlayer.PlayerGui.Notification:Destroy() 
+end 
 tabs.Main:Select()
 MacLib:LoadAutoLoadConfig()
