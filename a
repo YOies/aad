@@ -1,4 +1,4 @@
---try
+--again
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -2149,7 +2149,7 @@ sections.MainSection25:Header({
 	Name = "Auto Roll Unit Stats:"
 })
 
-local multiunitevo = sections.MainSection25:Dropdown({
+local stattorerollagain = sections.MainSection25:Dropdown({
 	Name = "Select Multi Stats:",
 	Search = true,
 	Multi = true,
@@ -2205,6 +2205,8 @@ local rollstat = sections.MainSection25:Toggle({
 
                   return 
                 end 
+
+                
 local text = game:GetService("Players").LocalPlayer.PlayerGui.StatsPotential.Main.Base.Grade[getgenv().StatToRoll].Grade.Text
 
 local function isInTable(value, tbl)
@@ -2220,7 +2222,7 @@ if not isInTable(text, WantedStatForRoll) then
     print("not correct stats, start rolling")
 	local args = {
 		getgenv().StatToRoll,
-		getgenv().UnitLoadout:GetAttribute("OnTemplateUnit"),
+		game:GetService("Players").LocalPlayer.PlayerGui.UnitsLoadout.Main[getgenv().UnitLoadout]:GetAttribute("OnTemplateUnit"),
 		"Selective"
 	}
 	game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Gambling"):WaitForChild("RerollPotential"):FireServer(unpack(args))
