@@ -1,4 +1,4 @@
---b
+--d
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -118,7 +118,7 @@ Window:Dialog({
     Buttons = {
         {
             Name = "Mobile",
-            Callback = function() Window:SetScale(0.5) end,
+            Callback = function() Window:SetScale(0.65) end,
         },
         {
             Name = "PC",
@@ -165,7 +165,9 @@ sections.MainSection13 = tabs.Settings:Section({ Side = "Right" })
 sections.MainSection1:Header({ Name = "AutoJoin-Type World For All Modes:" })
 
 local WorldSelectForAutoComplete = sections.MainSection1:Dropdown({
+    
     Name = "Select Type To Auto Join:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Story", "Ranger", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
@@ -181,6 +183,7 @@ local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
 
 sections.MainSection2:Dropdown({
     Name = "World:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM"},
@@ -190,6 +193,7 @@ sections.MainSection2:Dropdown({
 
 sections.MainSection2:Dropdown({
     Name = "Act:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
@@ -199,6 +203,7 @@ sections.MainSection2:Dropdown({
 
 sections.MainSection2:Dropdown({
     Name = "Difficulty:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Normal", "Hard", "Nightmare"},
@@ -210,6 +215,7 @@ sections.MainSection2:Header({ Name = "Ranger Configs:" })
 
 sections.MainSection2:Dropdown({
     Name = "World:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM"},
@@ -219,6 +225,7 @@ sections.MainSection2:Dropdown({
 
 sections.MainSection2:Dropdown({
     Name = "Act:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"1", "2", "3"},
@@ -463,6 +470,7 @@ sections.MainSection3:Toggle({
 
 local methodaction = sections.MainSection3:Dropdown({
     Name = "Select Action After: ",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Retry", "Next Stage", "Return To Lobby"},
@@ -679,6 +687,7 @@ sections.MainSection18:Header({Name = "Auto-Join Specific Rewards Challenges:"})
 
 local AutoCompleteForChooseRewards = sections.MainSection18:Dropdown({
     Name = "Auto Join X If No Rewards:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Story","Boss-Event","Easter-Event","AFK Chamber"},
@@ -705,6 +714,7 @@ local multiitemchallenge = sections.MainSection18:Dropdown({
 
 local ActionSpecificDPChallenge = sections.MainSection18:Dropdown({
     Name = "Select Action After: ",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Retry","Next Stage","Return To Lobby"},
@@ -904,6 +914,7 @@ sections.MainSection14:Header({Name = "Specific Place:"})
 
 local Place1 = sections.MainSection14:Dropdown({
     Name = "Select Unit [1st]:",
+    Search = true,
     Multi = false,
     Required = false,
     Options = units,
@@ -915,6 +926,7 @@ local Place1 = sections.MainSection14:Dropdown({
 
 local Place2 = sections.MainSection14:Dropdown({
     Name = "Select Unit [2nd]:",
+    Search = true,
     Multi = false,
     Required = false,
     Options = units,
@@ -927,6 +939,7 @@ local Place2 = sections.MainSection14:Dropdown({
 local Place3 = sections.MainSection14:Dropdown({
     Name = "Select Unit [3rd]:",
     Multi = false,
+    Search = true,
     Required = false,
     Options = units,
     Default = "None",
@@ -938,6 +951,7 @@ local Place3 = sections.MainSection14:Dropdown({
 local Place4 = sections.MainSection14:Dropdown({
     Name = "Select Unit [4th]:",
     Multi = false,
+    Search = true,
     Required = false,
     Options = units,
     Default = "None",
@@ -949,6 +963,7 @@ local Place4 = sections.MainSection14:Dropdown({
 local Place5 = sections.MainSection14:Dropdown({
     Name = "Select Unit [5th]:",
     Multi = false,
+    Search = true,
     Required = false,
     Options = units,
     Default = "None",
@@ -960,6 +975,7 @@ local Place5 = sections.MainSection14:Dropdown({
 local Place6 = sections.MainSection14:Dropdown({
     Name = "Select Unit [6th]:",
     Multi = false,
+    Search = true,
     Required = false,
     Options = units,
     Default = "None",
@@ -1170,6 +1186,7 @@ local function createUnitDropdowns()
     for i, info in ipairs(unitOptions) do
         sections.MainSection8:Dropdown({
             Name = info.name,
+            Search = true,
             Multi = false,
             Required = false,
             Options = units,
@@ -1318,6 +1335,7 @@ sections.MainSection11:Header({
 
 local AutoCompleteForChoose = sections.MainSection11:Dropdown({
     Name = "Auto Join X After Done All:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
@@ -1455,6 +1473,7 @@ sections.MainSection16:Header({
 
 local AutoCompleteForChooseSpecfic = sections.MainSection16:Dropdown({
     Name = "Auto Join X After Done All:",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
@@ -1488,6 +1507,7 @@ local multispecficDP = sections.MainSection16:Dropdown({
 
 local ActionSpecificDP = sections.MainSection16:Dropdown({
     Name = "Select Action After: ",
+    Search = true,
     Multi = false,
     Required = true,
     Options = {"Retry", "Next Stage", "Return To Lobby"},
@@ -2061,6 +2081,7 @@ sections.MainSection22:Header({
 
 local Dropdown = sections.MainSection22:Dropdown({
 	Name = "Select UI",
+    Search = true,
 	Multi = false,
 	Required = false,
 	Options = {"Crafting","EvolveTier","FeedEXP","Items","LimitBreaks","Merchant","ShinyNormalize","StatsPotential","Traits","UnitsEvolve","UnitsGacha","ApplyCurse","EasterEggEvent"},
@@ -2171,6 +2192,7 @@ local stattorerollagain = sections.MainSection25:Dropdown({
 
 local Dropdown = sections.MainSection25:Dropdown({
 	Name = "Select Units [Loadout:]",
+    Search = true,
 	Multi = false,
 	Required = false,
 	Options = unitsloadout,
@@ -2183,6 +2205,7 @@ local Dropdown = sections.MainSection25:Dropdown({
 
 local Dropdown = sections.MainSection25:Dropdown({
 	Name = "Select Stat To Roll:",
+    Search = true,
 	Multi = false,
 	Required = false,
 	Options = rollstats,
