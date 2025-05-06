@@ -1,4 +1,4 @@
---d
+--bb
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -2385,6 +2385,17 @@ sections.MainSection13:Toggle({
     end,
 }, "AutoLobbyIfGlitchedToggle")
 
+sections.MainSection13:Slider({
+    Name = "UI Scale",
+    Default = 1,
+    Minimum = 0.2,
+    Maximum = 2,
+    DisplayMethod = "Tenths",
+    Callback = function(Val)
+        Window:SetScale(Val)
+    end,
+})
+
 sections.MainSection13:Button({
     Name = "Remove Auto Load Config",
     Callback = function()
@@ -2411,6 +2422,9 @@ sections.MainSection13:Button({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/YOies/HideGUI/refs/heads/main/KazounProjects"))()
     end,
 })
+
+
+
 
 MacLib:SetFolder("Maclib")
 tabs.Settings:InsertConfigSection("Left")
