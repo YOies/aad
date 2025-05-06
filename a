@@ -1,3 +1,4 @@
+--try
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -2219,7 +2220,7 @@ if not isInTable(text, WantedStatForRoll) then
     print("not correct stats, start rolling")
 	local args = {
 		getgenv().StatToRoll,
-		getgenv().UnitLoadout,
+		getgenv().UnitLoadout:GetAttribute("OnTemplateUnit"),
 		"Selective"
 	}
 	game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Gambling"):WaitForChild("RerollPotential"):FireServer(unpack(args))
