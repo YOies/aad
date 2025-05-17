@@ -1,4 +1,3 @@
---d
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local vu = game:GetService("VirtualUser")
     vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -63,7 +62,7 @@ end
 local MacLib = loadstring(game:HttpGet("https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt"))()
 
 local Window = MacLib:Window({
-    Title = "L-Hub",
+    Title = "L-Hub v0.52.2",
     Subtitle = "https://discord.gg/xhUcqNUfr9",
     Size = UDim2.fromOffset(800, 650),
     DragStyle = 2,
@@ -170,7 +169,7 @@ local WorldSelectForAutoComplete = sections.MainSection1:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"Story", "Ranger", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
+    Options = {"Story", "Ranger", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "AFK Chamber"},
     Default = "",
     Callback = function(Value) getgenv().TypePortal = Value end,
 }, "PortalSelect")
@@ -186,7 +185,7 @@ sections.MainSection2:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM"},
+    Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM","TokyoGhoul"},
     Default = "",
     Callback = function(Value) getgenv().WorldSelect = Value end,
 }, "SelectWorldStory")
@@ -218,7 +217,7 @@ sections.MainSection2:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM"},
+    Options = {"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM","TokyoGhoul"},
     Default = "",
     Callback = function(Value) getgenv().WorldSelectRanger = Value end,
 }, "SelectWorldStoryRanger")
@@ -228,7 +227,7 @@ sections.MainSection2:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"1", "2", "3"},
+    Options = {"1", "2", "3","4","5"},
     Default = "",
     Callback = function(Value) getgenv().ActSelectRanger = Value end,
 }, "SelectActRanger")
@@ -300,16 +299,6 @@ local join = sections.MainSection1:Toggle({
                     playRoomEvent:FireServer("Create", {CreateChallengeRoom = true})
                     task.wait(.3)
                     playRoomEvent:FireServer("Start")
-                    break
-                elseif getgenv().TypePortal == "Easter-Event" then
-                    local args = {
-                        "Easter-Event"
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("PlayRoom"):WaitForChild("Event"):FireServer(unpack(args))                    
-                    print("created easter event")
-                    task.wait(.5)
-                    playRoomEvent:FireServer("Start")
-                    print("started")
                     break
                 end
                 task.wait(.5)
@@ -690,7 +679,7 @@ local AutoCompleteForChooseRewards = sections.MainSection18:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"Story","Boss-Event","Easter-Event","AFK Chamber"},
+    Options = {"Story","Boss-Event","AFK Chamber"},
     Default = "",
     Callback = function(Value)
         getgenv().WaitChallenge = Value 
@@ -829,49 +818,6 @@ local specificchallenge = sections.MainSection18:Toggle({
                 join:UpdateState(true)
             end
         end
-        
-        if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
-        
-        while task.wait(0.5) do
-            if not getgenv().AutoJoinChallengeSelected then break end
-            
-            local itemsFolders = game:GetService("ReplicatedStorage").Gameplay.Game.Challenge.Items
-            local found = {}
-            for _, items in pairs(itemsFolders:GetChildren()) do
-                found[items.Name] = true
-            end
-            
-            local foundItem = false
-            
-            for _, wantedName in pairs(getgenv().WantedItemsForChallenge) do
-                if found[wantedName] then
-                    foundItem = true
-                    
-                    local mode = game:GetService("Players").LocalPlayer.PlayerGui.HUD.InGame.Main.GameInfo.Gamemode.Label.Text
-                    local playRoomEvent = game:GetService("ReplicatedStorage").Remote.Server.PlayRoom.Event
-                    
-                    if mode ~= "Challenge" then
-                        playRoomEvent:FireServer("Create")
-                        task.wait(0.5)
-                        
-                        playRoomEvent:FireServer("Create", {["CreateChallengeRoom"] = true})
-                        task.wait(0.5)
-                        playRoomEvent:FireServer("Start")
-                    end
-                    break
-                end
-            end
-            
-            if not foundItem then
-                task.wait(1)
-                ActionWinLose:SetValue(WaitChallenge)
-                Options.AutoJoinType:SetValue(true) 
-                Options.AutoAction:SetValue(true)
-                
-                WorldSelectForAutoComplete:UpdateSelection(WaitChallenge)
-                join:UpdateState(true)
-            end
-        end
     end,
 }, "AutoJoinChallengeSelectedToggle")
 
@@ -879,29 +825,18 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local units = {"None"}
 
-local unitsFolder = player:FindFirstChild("UnitsFolder")
 
-if unitsFolder then
-    for _, v in ipairs(unitsFolder:GetChildren()) do
-        if v:IsA("Folder") then
-            table.insert(units, v.Name)
-        end
-    end
-else
-    local guiUnits = player:FindFirstChild("PlayerGui")
-        :FindFirstChild("Profile")
-        :FindFirstChild("Container")
-        :FindFirstChild("Units")
-        :FindFirstChild("Frame")
+
+    local guiUnits = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("UnitsLoadout")
     
     if guiUnits then
-        for _, v in ipairs(guiUnits:GetChildren()) do
-            if v:IsA("TextButton") and v.Name ~= "None" then
+        for _,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.UnitsLoadout.Main:GetDescendants()) do 
+            if v:IsA('Model') and v.Parent.Name == "WorldModel" then 
                 table.insert(units, v.Name)
             end
         end
     end
-end
+
 
 getgenv().Unit1ForPlace = "None"
 getgenv().Unit2ForPlace = "None"
@@ -1309,6 +1244,52 @@ sections.MainSection10:Toggle({
     end
 }, "AutoSmartUpgradeToggle")
 
+local lefttorightupgrade = sections.MainSection10:Toggle({
+    Name = "Auto Up Max Slot 1 -> 6",
+    Default = false,
+    Callback = function(value)
+        getgenv().Start = value
+task.spawn(function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        
+        local player = Players.LocalPlayer
+        local loadout = {"UnitLoadout1", "UnitLoadout2", "UnitLoadout3", "UnitLoadout4", "UnitLoadout5", "UnitLoadout6"}
+        local path = player.PlayerGui.UnitsLoadout.Main
+        local upgradetext = player.PlayerGui.HUD.InGame.UnitsManager.Main.Main.ScrollingFrame
+        
+        while task.wait(0.5) do
+            if getgenv().Start == true then
+                for _, slotName in ipairs(loadout) do
+                    local slot = path:FindFirstChild(slotName)
+                    if slot and slot:IsA("TextButton") and slot:GetAttribute("OnTemplateUnit") ~= "null" then
+                        local unitname = tostring(slot.Frame.UnitFrame.Info.Folder.Value)
+                        local unitUI = upgradetext:WaitForChild(unitname)
+                        local upgradeLabel = unitUI:WaitForChild("UpgradeText")
+        
+                        while getgenv().Start do
+                            if string.find(upgradeLabel.Text, "%(MAX%)") then
+                                print(unitname .. " is fully upgraded!")
+                                break -- Move to next unit
+                            else
+                            local args = {
+            game:GetService("Players").LocalPlayer.UnitsFolder[unitname]
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Units"):WaitForChild("Upgrade"):FireServer(unpack(args))
+        
+                            end
+                            RunService.Heartbeat:Wait()
+                        end
+                    end
+                end
+            else
+                break -- Stop everything if toggle is false
+            end
+        end
+    end)
+    end
+}, "AutoUpgradeFromLeftToRightToggle")
+
 local randomupgrade = sections.MainSection10:Toggle({
     Name = "Auto Random Upgrade",
     Default = false,
@@ -1329,6 +1310,7 @@ local randomupgrade = sections.MainSection10:Toggle({
     end
 }, "AutoRandomUpgradeToggle")
 
+
 sections.MainSection11:Header({
     Text = "All Rangers Auto Join:"
 })
@@ -1338,7 +1320,7 @@ local AutoCompleteForChoose = sections.MainSection11:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
+    Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "AFK Chamber"},
     Default = "",
     Callback = function(Value)
         getgenv().WaitRangers = Value
@@ -1351,85 +1333,90 @@ local completeall = sections.MainSection11:Toggle({
     Name = "Auto Complete All Rangers Stage",
     Default = false,
     Callback = function(value)
-        getgenv().AutoCompleteRangersStage = value
-        
-        if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
-        
-        if join and join.State == true then 
-            join:UpdateState(false) 
+  getgenv().AutoCompleteRangersStage = value
+
+if game:GetService("Players").LocalPlayer:FindFirstChild("UnitsFolder") then return end
+
+if join and join.State == true then 
+    join:UpdateState(false) 
+end
+
+task.spawn(function()
+    while task.wait(0.5) do
+        if not getgenv().AutoCompleteRangersStage then break end
+
+        local player = game:GetService("Players").LocalPlayer
+        player.PlayerGui.PlayRoom.Enabled = true
+        task.wait(0.9)
+
+        firePlayRoomEvent("Create")
+        firePlayRoomEvent("Change-Mode", { Mode = "Ranger Stage" })
+
+        local worlds = { "OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM", "TokyoGhoul" }
+        for _, world in ipairs(worlds) do
+            firePlayRoomEvent("Change-World", { World = world })
+            task.wait(0.5)
         end
-        
-        task.spawn(function()
-            while task.wait(0.5) do
-                if not getgenv().AutoCompleteRangersStage then break end
-                
-                local player = game:GetService("Players").LocalPlayer
-                player.PlayerGui.PlayRoom.Enabled = true
-                task.wait(0.9)
-                
-                firePlayRoomEvent("Create")
-                firePlayRoomEvent("Change-Mode", { Mode = "Ranger Stage" })
-                
-                local worlds = { "OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM" }
-                for _, world in ipairs(worlds) do
-                    firePlayRoomEvent("Change-World", { World = world })
-                    task.wait(.5)
-                end
-                
-                local allLocked = true
-                local chapterDescendants = player.PlayerGui.PlayRoom.Main.GameStage.Main.Base.Chapter:GetDescendants()
-                
+
+        local allLocked = true
+        local chapterDescendants = player.PlayerGui.PlayRoom.Main.GameStage.Main.Base.Chapter:GetDescendants()
+
+        for _, v in pairs(chapterDescendants) do
+            if v:IsA("Frame") and v.Name == "RangerStageLock" and v.Visible == false then
+                allLocked = false
+                break
+            end
+        end
+
+        if allLocked then
+            getgenv().AutoCompleteRangersStage = false
+            task.wait(1)
+
+            firePlayRoomEvent("Remove")
+            click(player.PlayerGui.PlayRoom.Main.Button.Leave)
+            task.wait(1)
+
+            WorldSelectForAutoComplete:UpdateSelection(getgenv().WaitRangers)
+            join:UpdateState(true)
+            break
+        end
+
+        local stageFound = false
+
+        for _, worldName in ipairs(worlds) do
+            if stageFound then break end
+
+            local maxStage = (worldName == "TokyoGhoul") and 5 or 3
+
+            for i = 1, maxStage do
+                if stageFound then break end
+
+                local stageName = "RangerStage" .. i
+
                 for _, v in pairs(chapterDescendants) do
                     if v:IsA("Frame") and v.Name == "RangerStageLock" and v.Visible == false then
-                        allLocked = false
-                        break
-                    end
-                end
-                
-                if allLocked then
-                    getgenv().AutoCompleteRangersStage = false
-                    task.wait(1)
-                    
-                    firePlayRoomEvent("Remove")
-                    click(player.PlayerGui.PlayRoom.Main.Button.Leave)
-                    task.wait(1)
-                    
-                    WorldSelectForAutoComplete:UpdateSelection(getgenv().WaitRangers)
-                    join:UpdateState(true)
-                    break
-                end
-                
-                local stageFound = false
-                
-                for _, worldName in ipairs(worlds) do
-                    if stageFound then break end
-                    
-                    for _, stageName in ipairs({ "RangerStage1", "RangerStage2", "RangerStage3" }) do
-                        if stageFound then break end
-                        
-                        for _, v in pairs(chapterDescendants) do
-                            if v:IsA("Frame") and v.Name == "RangerStageLock" and v.Visible == false then
-                                local chapterFrame = v.Parent
-                                local worldFrame = chapterFrame.Parent
-                                
-                                local fullName = tostring(worldFrame.Name)
-                                local world, stage = string.match(fullName, "([^_]+)_([^_]+)")
-                                
-                                if world == worldName and stage == stageName then
-                                    firePlayRoomEvent("Change-World", { World = world })
-                                    firePlayRoomEvent("Change-Chapter", { Chapter = fullName })
-                                    firePlayRoomEvent("Submit")
-                                    firePlayRoomEvent("Start")
-                                    
-                                    stageFound = true
-                                    break
-                                end
-                            end
+                        local chapterFrame = v.Parent
+                        local worldFrame = chapterFrame.Parent
+
+                        local fullName = tostring(worldFrame.Name)
+                        local world, stage = string.match(fullName, "([^_]+)_([^_]+)")
+
+                        if world == worldName and stage == stageName then
+                            firePlayRoomEvent("Change-World", { World = world })
+                            firePlayRoomEvent("Change-Chapter", { Chapter = fullName })
+                            firePlayRoomEvent("Submit")
+                            firePlayRoomEvent("Start")
+
+                            stageFound = true
+                            break
                         end
                     end
                 end
             end
-        end)
+        end
+    end
+end)
+
     end
 }, "AutoCompleteAllRangersStage")
 
@@ -1476,7 +1463,7 @@ local AutoCompleteForChooseSpecfic = sections.MainSection16:Dropdown({
     Search = true,
     Multi = false,
     Required = true,
-    Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "Easter-Event", "AFK Chamber"},
+    Options = {"Story", "Raid", "Challenge", "Infinity Castle", "Boss-Event", "AFK Chamber"},
     Default = "",
     Callback = function(Value)
         getgenv().WaitRangersSpecific = Value
@@ -1484,11 +1471,13 @@ local AutoCompleteForChooseSpecfic = sections.MainSection16:Dropdown({
 }, "AutoCompleteForChooseSelectSpecific")
 
 local rangerStages = {}
-for _, world in ipairs({"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM"}) do
-    for i = 1, 3 do
+for _, world in ipairs({"OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM", "TokyoGhoul"}) do
+    local maxStage = (world == "TokyoGhoul") and 5 or 3
+    for i = 1, maxStage do
         table.insert(rangerStages, world .. "_RangerStage" .. i)
     end
 end
+
 
 local multispecficDP = sections.MainSection16:Dropdown({
     Name = "Select Multi Specific Rangers:",
@@ -1543,6 +1532,7 @@ task.spawn(function()
             DemonSlayer = 3,
             Naruto = 4,
             OPM = 5,
+            TokyoGhoul = 6,
         }
         if worldA ~= worldB then
             return worldOrder[worldA] < worldOrder[worldB]
@@ -1559,7 +1549,7 @@ task.spawn(function()
         firePlayRoomEvent("Change-Mode", { Mode = "Ranger Stage" })
 
         -- Preload all worlds so chapters are registered in GUI
-        local initialWorlds = { "OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM" }
+        local initialWorlds = { "OnePiece", "Namek", "DemonSlayer", "Naruto", "OPM","TokyoGhoul" }
         for _, world in ipairs(initialWorlds) do
             firePlayRoomEvent("Change-World", { World = world })
 
@@ -1692,7 +1682,7 @@ sections.MainSection12:Header({
 })
 
 local MultiDropdown = sections.MainSection12:Dropdown({
-	Name = "Select Units/Items To Notify:",
+	Name = "Select Items To Notify:",
 	Search = true,
 	Multi = true,
 	Required = false,
@@ -1706,7 +1696,9 @@ local MultiDropdown = sections.MainSection12:Dropdown({
                "Chaos Bone Shard","Surge Nucleus","Mutant Core Fragment","Genesis Matrix","Neurochip Beta",
                "Tactical Frame","SYN-Core","Rubber Fruit","Sea Gem Fragment","Soul Shard","Mystic Kelp","Will Core",
                "Void Pearl","Obsidian Plate","Marine Tech Chip","Combat Fluid","Ghost Lens","Ancient Power Core",
-               "Bunny Bounce Boots","Carrot Cutter","Fluffy Focus","Furrocious Fluff"},
+               "Bunny Bounce Boots","Carrot Cutter","Fluffy Focus","Furrocious Fluff","Gourmet Meal","Ribe's RC Cells","Ujaku Feather","Biaiku Scale","Kakuja Mask Shard","Centipede Husk",
+               "Ghoul City Portal I","CGGG Investigator's Badge","Yoshimarun's Mask Fragment","Arata Armor Piece","One-Eyed Fragment","Ghoul City Portal II","Ghoul City Portal III","Eto_Yoshimura","RCCells"
+             },
 	Default = {'None'},
 	Callback = function(Value)
 		getgenv().WantedNotify = {}
@@ -2084,7 +2076,7 @@ local Dropdown = sections.MainSection22:Dropdown({
     Search = true,
 	Multi = false,
 	Required = false,
-	Options = {"Crafting","EvolveTier","FeedEXP","Items","LimitBreaks","Merchant","ShinyNormalize","StatsPotential","Traits","UnitsEvolve","UnitsGacha","ApplyCurse","EasterEggEvent"},
+	Options = {"Crafting","EvolveTier","FeedEXP","Items","LimitBreaks","Merchant","ShinyNormalize","StatsPotential","Traits","UnitsEvolve","UnitsGacha","ApplyCurse"},
 	Default = 1,
 	Callback = function(Value)
 		getgenv().UI = Value 
